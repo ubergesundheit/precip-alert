@@ -2,7 +2,6 @@
 
 require 'chunky_png'
 
-%x{./get_rain.sh}
 
 # hard coded values for regenradar images from wetteronline.de
 
@@ -23,9 +22,14 @@ pixels_to_check = [
 	[252,171]
 ]
 
-8.times do |i|
-  image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
+# execute shell script to download
+# and split the rain gif
+%x{./get_rain.sh}
 
+# analyze the 9 images
+9.times do |i|
+  image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
+puts "regen#{i}"
   pixels_to_check.each do |coords|
     pixel_color = ChunkyPNG::Color.to_hex(image[coords[0],coords[1]], false)
     if rain_strengths.values.include?(pixel_color)

@@ -30,8 +30,42 @@ def parse_time(image = ChunkyPNG::Image.from_file("tmp/regen_0.png"))
   white = "#fcfafc"
   
   # first digit: check for 0,1,2
+  if hex(image[11,15]) == white # first digit is a 0
+    first = 0
+  elsif hex(image[14,15]) == white # first digit is a 1
+    first = 1
+  else # only digit left: 2
+    first = 2
+  end
 
   # second digit: check for 0 to 9
+  if hex(image[27,17]) == white # 4
+    second = 4
+  elsif hex(image[20,15]) == white # 0 or 5
+    if hex(image[26,11]) == white
+      second = 5
+    else
+      second = 0
+    end
+  elsif hex(image[25,20]) == white # 1 or 2
+    if hex(image[26,20]) == white
+      second = 2
+    else
+      second = 1
+    end
+  elsif hex(image[22,15]) == white # 3 or 8
+    if hex(image[20,13]) == white
+      second = 8
+    else
+      second = 3
+    end
+  elsif hex(image[26,17]) == white # 6
+    second = 6
+  elsif hex(image[20,11]) == white # 7
+    second = 7
+  else
+    second = 9
+  end
 
   # third digit: check for 0,1,3,4
   # is it a 4?
@@ -47,19 +81,20 @@ def parse_time(image = ChunkyPNG::Image.from_file("tmp/regen_0.png"))
     minutes = 0
   end
 
-  minutes
+  ["#{first}#{second}".to_i, minutes]
 end 
 
 # execute shell script to download
 # and split the rain gif
 %x{./get_rain.sh}
 
+start_time = parse_time
 
-# discard first image and look at the rest of the images
-(1..8).each do |i|
+# discard first & second image and look at the rest of the images
+(2..8).each do |i|
   image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
-  puts "regen#{i} #{image.dimension.inspect}"
-  puts parse_time(image)
+  # puts "regen#{i} #{image.dimension.inspect}"
+  # puts parse_time(image)
   pixels_to_check.each do |coords|
     pixel_color = hex(image[coords[0],coords[1]])
     if rain_strengths.values.include?(pixel_color)

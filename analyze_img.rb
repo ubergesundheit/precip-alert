@@ -5,17 +5,17 @@ require 'chunky_png'
 
 # hard coded values for regenradar images from wetteronline.de
 
-rain_strengths = {
+@rain_strengths = {
   # :kein_regen => '#d4d6d4',
     :leicht     => "#acfefc",
-    :maessig    => "#54d2fc",
-    :maessiger  => "#2caafc",
+    :mäßig    => "#54d2fc",
+    :mäßiger  => "#2caafc",
     :stark      => "#1c7edc",
-    :staerker   => "#9c329c",
-    :sehr_stark => "#fc02fc"
+    :stärker   => "#9c329c",
+    :"sehr stark" => "#fc02fc"
 }
 
-pixels_to_check = [
+@pixels_to_check = [
 	[249,168],
 	[253,168],
 	[249,172],
@@ -81,24 +81,42 @@ def parse_time(image = ChunkyPNG::Image.from_file("tmp/regen_0.png"))
     minutes = 0
   end
 
-  ["#{first}#{second}".to_i, minutes]
+  now = Time.now
+  Time.new(now.year, now.month, now.day, "#{first}#{second}".to_i, minutes)
 end 
 
 # execute shell script to download
 # and split the rain gif
 %x{./get_rain.sh}
 
-start_time = parse_time
 
-# discard first & second image and look at the rest of the images
-(2..8).each do |i|
-  image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
-  # puts "regen#{i} #{image.dimension.inspect}"
-  # puts parse_time(image)
-  pixels_to_check.each do |coords|
-    pixel_color = hex(image[coords[0],coords[1]])
-    if rain_strengths.values.include?(pixel_color)
-      puts "regen!! #{rain_strengths.key(pixel_color)}"
+def parse_imgs
+  time_first_img = parse_time
+  result = {}
+
+  # discard first & second image and look at the rest of the images
+  (1..8).each do |i|
+    image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
+    # puts "regen#{i} #{image.dimension.inspect}"
+    # puts parse_time(image)
+    result[time_first_img + 900*i] = ""
+    current_img_result = []
+    @pixels_to_check.each do |coords|
+      pixel_color = hex(image[coords[0],coords[1]])
+      if @rain_strengths.values.include?(pixel_color)
+        current_img_result << @rain_strengths.values.find_index(pixel_color)
+      end
     end
+    # make items in the array unique
+    current_img_result.uniq!
+    # sort the items
+    current_img_result.sort!
+
+    current_result_string = "#{@rain_strengths.keys[current_img_result[0]]}" if current_img_result.size > 0
+    current_result_string = "#{current_result_string} bis #{@rain_strengths.keys[current_img_result[1]]}" if current_img_result.size == 2
+    result[time_first_img + 900*i] = current_result_string
   end
+  result
 end
+
+puts parse_imgs

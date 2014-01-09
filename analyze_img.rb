@@ -41,17 +41,17 @@ def parse_time(image = ChunkyPNG::Image.from_file("tmp/regen_0.png"))
   # second digit: check for 0 to 9
   if hex(image[27,17]) == white # 4
     second = 4
+  elsif hex(image[26,17]) == white # 6
+    second = 6
   elsif hex(image[20,15]) == white # 0 or 5
     if hex(image[26,11]) == white
-      second = 5
+      second = 5 
     else
       second = 0
     end
   elsif hex(image[25,20]) == white # 1 or 2
     if hex(image[26,20]) == white
       second = 2
-    elsif hex(image[26,17]) == white # 6
-      second = 6
     else
       second = 1
     end

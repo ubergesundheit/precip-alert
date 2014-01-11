@@ -35,13 +35,13 @@ end
 
 def parse_imgs
   time_reader = TimeReader.new
-  time_first_img = time_reader.parse_time
+  time_first_img = time_reader.read_time
   result = {}
 
   # discard first & second image and look at the rest of the images
   (1..8).each do |i|
     image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
- 
+
     current_img_result = []
     @pixels_to_check.each do |coords|
       pixel_color = hex(image[coords[0],coords[1]])
@@ -59,7 +59,6 @@ def parse_imgs
 end
 
 def make_human_readable(times)
-  puts times
   output = ""
   times.each do |time,strength|
       current_result_string = "#{@rain_strengths.keys[strength[0]]}er"
@@ -72,7 +71,4 @@ def make_human_readable(times)
   output
 end
 
-t= TimeReader.new
-t.read_time
-
-# puts make_human_readable(parse_imgs)
+puts make_human_readable(parse_imgs)

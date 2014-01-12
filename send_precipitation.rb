@@ -10,22 +10,13 @@ image_analyzer = ImageAnalyzer.new
 
 result = image_analyzer.human_readable
 
-puts result
+if result == ""
+  setup @config['jid'], @config['password'], 'talk.google.com'
 
-start = Time.new(2014,1,12,20,0)
-
-def in(time)
-  now = Time.now
-  now - time
+  when_ready do
+    @config['send_to'].each do |addr|
+      say addr, result
+    end
+    shutdown
+  end
 end
-
-# if result == ""
-#   setup @config['jid'], @config['password'], 'talk.google.com'
-# 
-#   when_ready do
-#     @config['send_to'].each do |addr|
-#       say addr, result
-#     end
-#     shutdown
-#   end
-# end

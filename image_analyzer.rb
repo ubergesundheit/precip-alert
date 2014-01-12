@@ -26,6 +26,19 @@ class ImageAnalyzer
     ChunkyPNG::Color.to_hex(pixel, false)
   end
  
+  def time_difference(time)
+    now = Time.now
+    case ((time - now) / 60)
+      when 0..22.5 then "einer viertel Stunde"
+      when 22.6..37.5 then "einer halben Stunde"
+      when 37.6..52.5 then "einer Stunde"
+      when 52.6..67.5 then "einer Stunde und 15 Minuten"
+      when 67.6..82.5 then "anderthalb Stunden"
+      when 82.6..97.5 then "einer Stunde und 45 Minuten"
+      when 97.6..112.5 then "zwei Stunden"
+    end
+  end
+
   def parse_imgs
     # execute shell script to download
     # and split the rain gif
@@ -49,7 +62,6 @@ class ImageAnalyzer
   
       # make items in the array unique
       current_img_result.uniq!
-  
       result[time_first_img + 900*i] = current_img_result.sort if current_img_result != []
     end
     result
@@ -63,7 +75,7 @@ class ImageAnalyzer
         current_result_string << " bis #{@@rain_strenghts.keys[strength[1]]}er" if strength.size == 2
         current_result_string << " Regen"
         
-        current_result_string << " in #{time}\n"
+        current_result_string << " in #{time_difference(time)}\n"
         output << current_result_string
     end
     output

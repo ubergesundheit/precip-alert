@@ -10,13 +10,15 @@ image_analyzer = ImageAnalyzer.new
 
 result = image_analyzer.human_readable
 
-if result == ""
-  setup @config['jid'], @config['password'], 'talk.google.com'
+setup @config['jid'], @config['password'], 'talk.google.com'
 
-  when_ready do
+when_ready do
+  if result != ""
     @config['send_to'].each do |addr|
       say addr, result
     end
-    shutdown
   end
+  sleep 10
+  shutdown
 end
+

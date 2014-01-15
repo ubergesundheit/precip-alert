@@ -75,7 +75,7 @@ class ImageAnalyzer
         current_result_string << " bis #{@@rain_strenghts.keys[strength[1]]}er" if strength.size == 2
         current_result_string << " Regen"
         
-        current_result_string << " in #{time_difference(time)}\n"
+        current_result_string << " in #{time_difference(time)} (#{time.strftime('%R')})\n"
         output << current_result_string
     end
     output

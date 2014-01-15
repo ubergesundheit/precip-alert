@@ -78,7 +78,7 @@ class ImageAnalyzer
         current_result_string << " in #{time_difference(time)} (#{time.strftime('%R')})\n"
         output << current_result_string
     end
-    output
+    output.rstrip
   end
 
 end

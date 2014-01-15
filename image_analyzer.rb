@@ -31,11 +31,13 @@ class ImageAnalyzer
     case ((time - now) / 60)
       when 0..22.5 then "einer viertel Stunde"
       when 22.6..37.5 then "einer halben Stunde"
-      when 37.6..52.5 then "einer Stunde"
-      when 52.6..67.5 then "einer Stunde und 15 Minuten"
-      when 67.6..82.5 then "anderthalb Stunden"
-      when 82.6..97.5 then "einer Stunde und 45 Minuten"
-      when 97.6..112.5 then "zwei Stunden"
+      when 37.6..52.5 then "einer Dreiviertelstunde"
+      when 52.6..67.5 then "einer Stunde"
+      when 67.6..82.5 then "einer Stunde und 15 Minuten"
+      when 82.6..97.5 then "anderthalb Stunden"
+      when 97.6..112.5 then "einer Stunde und 45 Minuten"
+      when 112.6..127.6 then "zwei Stunden"
+      else "???"
     end
   end
 
@@ -49,7 +51,7 @@ class ImageAnalyzer
     result = {}
   
     # discard first & second image and look at the rest of the images
-    (1..8).each do |i|
+    (2..8).each do |i|
       image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
   
       current_img_result = []

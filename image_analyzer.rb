@@ -6,13 +6,13 @@ class ImageAnalyzer
   # hard coded values for regenradar images from wetteronline.de
   
   @@rain_strenghts = {
-    # :kein_regen => '#d4d6d4',
-      :"sehr leicht"     => "#acfefc",
-      :leicht    => "#54d2fc",
-      :mäßig  => "#2caafc",
-      :stark      => "#1c7edc",
-      :stärker   => "#9c329c",
-      :"sehr stark" => "#fc02fc"
+    # :kein_regen => 3570849023,
+      :"sehr leicht"  => 2902392063,
+      :leicht         => 1423113471,
+      :mäßig          => 749403391,
+      :stark          => 478076159,
+      :stärker        => 2620562687,
+      :"sehr stark"   => 4228054271
   }
   
   @@pixels_to_check = [
@@ -44,7 +44,7 @@ class ImageAnalyzer
   def parse_imgs
     # execute shell script to download
     # and split the rain gif
-    %x{./get_rain.sh}
+    #%x{./get_rain.sh}
  
     time_reader = TimeReader.new
     time_first_img = time_reader.read_time
@@ -53,11 +53,12 @@ class ImageAnalyzer
     # discard first & second image and look at the rest of the images
     (2..8).each do |i|
       image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
-  
+      
       current_img_result = []
       @@pixels_to_check.each do |coords|
-        pixel_color = hex(image[coords[0],coords[1]])
+        pixel_color = image.get_pixel(coords[0], coords[1])
         if @@rain_strenghts.values.include?(pixel_color)
+          puts @@rain_strenghts.values.find_index(pixel_color)
           current_img_result << @@rain_strenghts.values.find_index(pixel_color)
         end
       end
@@ -67,11 +68,6 @@ class ImageAnalyzer
       result[time_first_img + 900*i] = current_img_result.sort if current_img_result != []
     end
     result
-    {
-      (time_first_img + 900*1) => [1],
-      (time_first_img + 900*2) => [1],
-      (time_first_img + 900*3) => [1]
-    }
   end
   
   def human_readable

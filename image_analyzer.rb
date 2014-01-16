@@ -7,9 +7,9 @@ class ImageAnalyzer
   
   @@rain_strenghts = {
     # :kein_regen => '#d4d6d4',
-      :leicht     => "#acfefc",
-      :mäßig    => "#54d2fc",
-      :mäßiger  => "#2caafc",
+      :"sehr leicht"     => "#acfefc",
+      :leicht    => "#54d2fc",
+      :mäßig  => "#2caafc",
       :stark      => "#1c7edc",
       :stärker   => "#9c329c",
       :"sehr stark" => "#fc02fc"
@@ -67,6 +67,11 @@ class ImageAnalyzer
       result[time_first_img + 900*i] = current_img_result.sort if current_img_result != []
     end
     result
+    {
+      (time_first_img + 900*1) => [1],
+      (time_first_img + 900*2) => [1],
+      (time_first_img + 900*3) => [1]
+    }
   end
   
   def human_readable

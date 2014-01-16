@@ -44,7 +44,7 @@ class ImageAnalyzer
   def parse_imgs
     # execute shell script to download
     # and split the rain gif
-    #%x{./get_rain.sh}
+    %x{./get_rain.sh}
  
     time_reader = TimeReader.new
     time_first_img = time_reader.read_time
@@ -58,7 +58,6 @@ class ImageAnalyzer
       @@pixels_to_check.each do |coords|
         pixel_color = image.get_pixel(coords[0], coords[1])
         if @@rain_strenghts.values.include?(pixel_color)
-          puts @@rain_strenghts.values.find_index(pixel_color)
           current_img_result << @@rain_strenghts.values.find_index(pixel_color)
         end
       end

@@ -51,7 +51,7 @@ class ImageAnalyzer
     result = {}
   
     # discard first & second image and look at the rest of the images
-    (2..8).each do |i|
+    (2..5).each do |i|
       image = ChunkyPNG::Image.from_file("tmp/regen_#{i}.png")
   
       current_img_result = []

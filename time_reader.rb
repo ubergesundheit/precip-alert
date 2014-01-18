@@ -51,5 +51,5 @@ class TimeReader
     now = Time.now
     Time.new(now.year, now.month, now.day, "#{first_results.index(first_results.min)}#{second_results.index(second_results.min)}".to_i, minutes)
   end
- 
+
 end

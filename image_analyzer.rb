@@ -72,13 +72,28 @@ class ImageAnalyzer
   def human_readable
     times = parse_imgs
     output = ""
-    times.each do |time,strength|
-        current_result_string = "#{@@rain_strenghts.keys[strength[0]]}er"
-        current_result_string << " bis #{@@rain_strenghts.keys[strength[1]]}er" if strength.size == 2
-        current_result_string << " Regen"
 
-        current_result_string << " in #{time_difference(time)} (#{time.strftime('%R')})\n"
-        output << current_result_string
+    def strength_str(a_strength)
+      s = "#{@@rain_strenghts.keys[a_strength[0]]}er"
+      s << " bis #{@@rain_strenghts.keys[a_strength[-1]]}er" if a_strength.size > 1
+      s << " Regen"
+    end
+
+    times.each do |time,strength|
+      if times.has_key?(time + 900)
+        span_strengths = []
+        ct = 0
+        while times.has_key?(time + 900 * ct)
+          span_strengths.concat(times[time + 900 * ct])
+          ct +=1
+        end
+        if ct > 0
+          output << "#{strength_str(span_strengths.uniq.sort)} in den nächsten #{900 * ct / 60} Minuten\n"
+          (0..ct).each { |i| times.delete(time + 900 * i) }
+        end
+      else
+        output << "#{strength_str(strength)} in #{time_difference(time)} (#{time.strftime('%R')})\n"
+      end
     end
     output.rstrip
   end

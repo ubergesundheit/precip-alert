@@ -88,7 +88,7 @@ class ImageAnalyzer
           ct +=1
         end
         if ct > 0
-          output << "#{strength_str(span_strengths.uniq.sort)} in den nächsten #{900 * ct / 60} Minuten\n"
+          output << "#{strength_str(span_strengths.uniq.sort)} von #{time.strftime('%R')} bis #{(time + 900 * ct).strftime('%R')}\n"
           (0..ct).each { |i| times.delete(time + 900 * i) }
         end
       else
